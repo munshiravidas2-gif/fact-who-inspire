@@ -6,64 +6,84 @@
     <title>Fact Who Inspire | Official Documentary Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #E50914; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #E50914; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-[#0B0F17] text-white">
+<body class="bg-[#0D0F17] text-white font-sans antialiased">
     <!-- Navbar -->
     <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-800">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <h1 class="text-xl font-black uppercase tracking-wider">Fact Who <span class="text-[#E50914]">Inspire</span></h1>
-            <a href="https://youtube.com/@factwhoinspire" target="_blank" class="bg-[#E50914] px-5 py-2 rounded-full text-sm font-bold">SUBSCRIBE</a>
+            <a href="https://youtube.com/@factwhoinspire" target="_blank" class="bg-[#E50914] px-5 py-2 rounded-full text-sm font-bold hover:bg-red-700 transition">SUBSCRIBE</a>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="pt-32 pb-20 px-6 max-w-6xl mx-auto">
-        <h2 class="text-3xl font-bold mb-8">Latest Documentaries</h2>
+    <main class="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+        <h2 class="text-3xl font-bold mb-8 border-l-4 border-[#E50914] pl-4">Latest Documentaries</h2>
         
         <!-- Loading Spinner -->
-        <div id="loader" class="flex justify-center py-20"><div class="loader"></div></div>
-        
+        <div id="loader" class="flex justify-center py-20">
+            <div class="loader"></div>
+        </div>
+
         <!-- Video Grid -->
         <div id="video-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </main>
 
     <script>
-        const CHANNEL_ID = 'UCs-M_dAtuQ-513W1937iGjQ';
+        const API_KEY = 'AIzaSyBFAHbgz9nWtmK3U7yP9CrA4bhquFcc4TU';
+        const CHANNEL_HANDLE = 'factwhoinspire';
         const videoGrid = document.getElementById('video-grid');
         const loader = document.getElementById('loader');
 
         async function fetchVideos() {
             try {
-                // Using rss2json API to fetch channel feed
-                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`);
-                const data = await res.json();
-                
-                loader.style.display = 'none'; // Hide loader
-                
-                if (data.items) {
-                    videoGrid.innerHTML = data.items.map(item => {
-                        const videoId = item.link.split('v=')[1];
-                        return `
-                            <div class="bg-[#161C28] rounded-2xl overflow-hidden hover:scale-105 transition">
-                                <a href="${item.link}" target="_blank">
-                                    <img src="https://img.youtube.com/vi/${videoId}/maxresdefault.jpg" class="w-full h-56 object-cover">
-                                    <div class="p-5">
-                                        <h3 class="font-bold text-lg line-clamp-2">${item.title}</h3>
-                                        <p class="text-[#E50914] font-bold mt-3">WATCH NOW →</p>
+                // 1. Channel ID फ़ैच करना
+                const channelRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${CHANNEL_HANDLE}&key=${API_KEY}`);
+                const channelData = await channelRes.json();
+
+                if (!channelData.items || channelData.items.length === 0) {
+                    throw new Error("Channel not found");
+                }
+
+                const channelId = channelData.items[0].id;
+
+                // 2. YouTube API से वीडियो लाना
+                const videoRes = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet,id&order=date&maxResults=6`);
+                const videoData = await videoRes.json();
+
+                loader.style.display = 'none';
+
+                if (videoData.items) {
+                    videoGrid.innerHTML = videoData.items
+                        .filter(item => item.id.kind === 'youtube#video')
+                        .map(item => {
+                            const videoId = item.id.videoId;
+                            const title = item.snippet.title;
+                            return `
+                                <div class="bg-[#161C28] rounded-2xl overflow-hidden hover:scale-105 transition duration-300 shadow-xl border border-gray-800">
+                                    <div class="relative pt-[56.25%]">
+                                        <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
                                     </div>
-                                </a>
-                            </div>
-                        `;
-                    }).join('');
+                                    <div class="p-5">
+                                        <h3 class="font-bold text-lg line-clamp-2 text-gray-100">${title}</h3>
+                                        <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" class="inline-block text-[#E50914] font-bold mt-3 hover:underline text-sm">WATCH ON YOUTUBE →</a>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
                 }
             } catch (err) {
-                videoGrid.innerHTML = '<p class="text-center text-gray-400">Could not load videos. Please check back later.</p>';
+                console.error("Error:", err);
+                loader.style.display = 'none';
+                videoGrid.innerHTML = '<p class="text-center text-gray-400 col-span-full py-10">Could not load videos. Please check back later.</p>';
             }
         }
+
         fetchVideos();
     </script>
 </body>
 </html>
+
