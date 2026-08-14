@@ -1,11 +1,76 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="hi" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <title>Fact Who Inspire</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fact Who Inspire | Official Website</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandRed: '#E50914',
+            brandDark: '#0B0F17',
+            cardDark: '#161C28',
+            goldAccent: '#FFB800'
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f4f4f4;">
-    <h1>Fact Who Inspire</h1>
-    <p>Official website of Documentaries, History & Untold Stories.</p>
+<body class="bg-brandDark text-white font-sans antialiased">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full z-50 bg-brandDark/80 backdrop-blur-md border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="#" class="text-2xl font-bold tracking-wider text-white">
+        Fact Who <span class="text-brandRed">Inspire</span>
+      </a>
+      <a href="https://youtu.be/vr5bVLr6lGA?si=mpiRs9Y-jBkEDi8A" target="_blank" 
+         class="bg-brandRed hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-full transition shadow-lg shadow-red-600/30">
+        Subscribe
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-32 pb-16 px-6 text-center max-w-5xl mx-auto">
+    <span class="bg-brandRed/20 text-brandRed text-xs font-semibold px-4 py-1.5 rounded-full border border-brandRed/30 uppercase tracking-widest">
+      Latest Documentary Out Now
+    </span>
+    <h1 class="text-4xl md:text-6xl font-extrabold mt-6 leading-tight">
+      Uncovering History & <br>
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-400">Stories That Inspire</span>
+    </h1>
+    <p class="text-gray-400 text-lg mt-4 max-w-2xl mx-auto">
+      सच्ची कहानियों, ऐतिहासिक संघर्षों और भारत की अनकही गाथाओं को सिनेमैटिक तरीके से समझें।
+    </p>
+  </section>
+
+  <!-- Featured Video Section -->
+  <section class="pb-16 px-6 max-w-5xl mx-auto">
+    <div class="bg-cardDark border border-gray-800 rounded-2xl p-4 md:p-6 shadow-2xl">
+      <div class="mb-4">
+        <span class="text-amber-400 text-xs font-semibold uppercase tracking-wider">Featured Video</span>
+        <h2 class="text-xl md:text-2xl font-bold mt-1">AZADI — The Story of India’s Freedom Struggle</h2>
+      </div>
+      
+      <!-- Video Player -->
+      <div class="relative w-full aspect-video rounded-xl overflow-hidden border border-gray-800">
+        <iframe class="absolute top-0 left-0 w-full h-full" 
+                src="https://www.youtube.com/embed/vr5bVLr6lGA" 
+                title="AZADI — The Story of India’s Freedom Struggle" 
+                allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800 py-8 text-center text-gray-500 text-sm">
+    <p>© 2026 Fact Who Inspire. All rights reserved.</p>
+  </footer>
+
 </body>
 </html>
